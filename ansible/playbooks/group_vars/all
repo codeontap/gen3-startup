@@ -1,0 +1,15 @@
+#- "/dev/xvdp"
+#- "/dev/xvdc"
+#- "/dev/xvdt"
+
+device_names:
+- dev: "/dev/xvdp"
+  path: "/codeontap"
+  fstype: ext4
+- dev: "/dev/xvdc"
+  path: "/cache"
+  fstype: ext4
+- dev: "/dev/xvdt"
+  path: "/temp"
+  fstype: ext4
+

@@ -1,0 +1,11 @@
+---
+- name: debug isblk value
+  debug: 
+    var: st.isblk
+    verbosity: 1
+
+- name: check if a block device
+  fail:
+    msg: "device must be a block file"
+  when: st.isblk
+

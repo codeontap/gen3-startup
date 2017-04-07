@@ -1,0 +1,10 @@
+---
+- name: excercise debug 
+  hosts: localhost
+  connection: local
+  
+  tasks:
+    - name: restart everything
+      stat: 
+        path: "/dev/xvdp"
+ 

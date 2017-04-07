@@ -1,0 +1,45 @@
+---
+- name: read ec2 facts
+  ec2_facts:
+
+- name: Display EC2 insance id
+  debug:
+    var: ansible_facts["ansible_ec2_instance_id"]
+    verbosity: 1
+
+- name: Display local IP
+  debug:
+    var: ansible_facts["ansible_ec2_local_ipv4"]
+    verbosity: 1
+
+- name: Display hostname to be set
+  debug:
+    msg: "{{ansible_facts[\"ansible_ec2_instance_id\"]}}@{{ansible_facts[\"ansible_ec2_local_ipv4\"] | regex_replace('^(.*)\\.(.*)\\.(.*)\\.(.*)$', '\\1-\\2-\\3-\\4')}}"
+
+- name: Set hostname to {instance_id}@{local_ipv4}
+  hostname:
+    name: "{{ansible_facts[\"ansible_ec2_instance_id\"]}}@{{ansible_facts[\"ansible_ec2_local_ipv4\"] | regex_replace('^(.*)\\.(.*)\\.(.*)\\.(.*)$', '\\1-\\2-\\3-\\4')}}"
+
+- name: Crete a file system
+  filesystem:
+    fstype: "{{ item.fstype }}"
+    dev: "{{ item.dev }}"
+#TODO: check if force should be set to yes    force: yes
+  with_items: "{{ device_names }}"
+  ignore_errors: True
+    
+#- name: Make sure a device is a block one
+#  stat:
+#    path: "{{ item.dev }}"
+#  register: st
+#  failed_when: not st.stat.isblk
+#  with_items: "{{ device_names}}"
+
+- name: Mount a device
+  mount:
+    path: "{{ item.path }}"
+    src: "{{ item.dev }}"
+    fstype: "{{ item.fstype }}"
+    state: mounted
+  with_items: "{{ device_names}}"
+  ignore_errors: True

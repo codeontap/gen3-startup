@@ -1,0 +1,15 @@
+---
+- name: check if a file is a block device
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: get stat
+      stat: 
+        path: "{{ item }}" 
+      register: st
+      failed_when: not st.stat.isblk
+      with_items:
+      - "/dev/xvdp"
+      - "/dev/xvdc"
+      - "/dev/xvdt"
