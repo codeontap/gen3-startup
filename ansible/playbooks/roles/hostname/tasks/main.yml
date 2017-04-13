@@ -2,6 +2,8 @@
 - name: Read EC2 facts
   ec2_facts:
   failed_when: ansible_facts["ansible_ec2_instance_id"] is not defined or ansible_facts["ansible_ec2_local_ipv4"]
+  ignore_errors: "{{ ansible_check_mode }}"
+
 - name: Display EC2 insance id
   debug:
     var: ansible_facts["ansible_ec2_instance_id"]
@@ -16,8 +18,10 @@
   debug:
     msg: "{{ansible_facts[\"ansible_ec2_instance_id\"]}}@{{ansible_facts[\"ansible_ec2_local_ipv4\"] | regex_replace('^(.*)\\.(.*)\\.(.*)\\.(.*)$', '\\1-\\2-\\3-\\4')}}"
     verbosity: 2
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Set hostname to {instance_id}@{local_ipv4}
   hostname:
     name: "{{ansible_facts[\"ansible_ec2_instance_id\"]}}@{{ansible_facts[\"ansible_ec2_local_ipv4\"] | regex_replace('^(.*)\\.(.*)\\.(.*)\\.(.*)$', '\\1-\\2-\\3-\\4')}}"
-  
+  ignore_errors: "{{ ansible_check_mode }}"
+ 
