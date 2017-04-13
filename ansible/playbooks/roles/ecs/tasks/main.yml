@@ -17,6 +17,7 @@
     regexp="^ECS_CLUSTER={{ecs_cluster}}$"
     line="ECS_CLUSTER={{ecs_cluster}}"
     state=present
+  failed_when: ecs_cluster is not defined
 
 - name: Add log driver to ecs config if provided
   lineinfile:
