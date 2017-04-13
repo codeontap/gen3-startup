@@ -31,9 +31,9 @@
   lineinfile:
     dest=/etc/sysconfig/docker
     regexp="^OPTIONS=(.*)--log-driver=(.*)$"
-    line="OPTIONS=\"${OPTIONS} --log-driver={{ecs_loglevel}}\""
+    line="OPTIONS=\"${OPTIONS} --log-driver={{ecs_log_driver}}\""
     state=present
-  when: ecs_loglevel is defined
+  when: ecs_log_driver is defined
 
 - name: Restart docker to ensure it picks up any EBS volume mounts and updated configuration settings
   service:
