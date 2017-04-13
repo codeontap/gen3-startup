@@ -2,6 +2,15 @@
 #- "/dev/xvdc"
 #- "/dev/xvdt"
 
+dirs:
+- path: "/etc/codeontap"
+  mode: "0755"
+- path: "/opt/codeontap/bootstrap"
+  mode: "0755"
+- path: "/var/log/codeontap"
+  mode: "0755"
+
+
 device_names:
 - dev: "/dev/xvdp"
   path: "/codeontap"
@@ -13,3 +22,8 @@ device_names:
   path: "/temp"
   fstype: ext4
 
+ignore: 
+  errors: False
+
+ecs_cluster: cluster
+ecs_loglevel: loglevel

@@ -1,0 +1,43 @@
+---
+- name: Create /etc/ecs directory if missing 
+  file:
+    path: /etc/ecs
+    state: directory
+    mode: 0755
+
+- name: Create ecs.config if missing
+  copy: 
+    content: "ECS_AVAILABLE_LOGGING_DRIVERS=[\"json-file\",\"syslog\",\"journald\",\"gelf\",\"fluentd\"]\nECS_LOGLEVEL=warn\n"
+    dest: /etc/ecs/ecs2.config
+    force: no
+
+- name: Add the cluster
+  lineinfile: 
+    dest=/etc/ecs/ecs2.config
+    regexp="^ECS_CLUSTER={{ecs_cluster}}$"
+    line="ECS_CLUSTER={{ecs_cluster}}"
+    state=present
+
+- name: Add log driver to ecs config if provided
+  lineinfile:
+    dest=/etc/ecs/ecs2.config
+    regexp="^ECS_LOGLEVEL={{ecs_loglevel}}$"
+    line="ECS_LOGLEVEL={{ecs_loglevel}}"
+    state=present
+  when: ecs_loglevel is defined
+
+- name: Add log driver to docker startup options if provided
+  lineinfile:
+    dest=/etc/sysconfig/docker
+    regexp="^OPTIONS=(.*)--log-driver=(.*)$"
+    line="OPTIONS=\"${OPTIONS} --log-driver={{ecs_loglevel}}\""
+    state=present
+  when: ecs_loglevel is defined
+
+- name: Restart docker to ensure it picks up any EBS volume mounts and updated configuration settings
+  service:
+    name: docker
+    state: restarted 
+
+- name: Start ECS service
+  command: /sbin/start ecs

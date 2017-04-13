@@ -1,0 +1,7 @@
+---
+- name: create a directory and set permissions
+  file:
+    path: "{{item.path}}"
+    state: directory
+    mode: "{{item.mode}}"
+  with_items: "{{dirs}}"

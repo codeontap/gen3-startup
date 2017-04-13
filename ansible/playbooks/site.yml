@@ -2,5 +2,8 @@
 - name: playbook for experimental purposes
   hosts: all
   roles:
-    - ec2
+    - dirs
+    - hostname
+    - mount
+    - ecs
 

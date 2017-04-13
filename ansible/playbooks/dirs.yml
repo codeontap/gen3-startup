@@ -1,0 +1,7 @@
+---
+- name: create directories from a list and set mode
+  hosts: localhost
+  connection: local
+
+  roles:
+  - dirs
