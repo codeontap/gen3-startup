@@ -1,7 +1,3 @@
-#- "/dev/xvdp"
-#- "/dev/xvdc"
-#- "/dev/xvdt"
-
 dirs:
 - path: "/etc/codeontap"
   mode: "0755"
@@ -21,9 +17,3 @@ device_names:
 - dev: "/dev/xvdt"
   path: "/temp"
   fstype: ext4
-
-ignore: 
-  errors: False
-
-ecs_cluster: cluster
-ecs_loglevel: loglevel
