@@ -6,4 +6,4 @@ Varibles to be passed to command line:
 
 To pass them --extra-vars argument is used:
 
-`ansible-playbook site.yml --extra-vars "ecs_cluster=cluster ecs_loglevel=leglevel ecs_log_driver=log_driver"`
+`ansible-playbook site.yml -i hosts --extra-vars "ecs_cluster=cluster ecs_loglevel=leglevel ecs_log_driver=log_driver"`
