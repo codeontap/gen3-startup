@@ -11,7 +11,7 @@ EC2_REGION=$(/etc/codeontap/facts.sh | grep cot:accountRegion= | cut -d '=' -f 2
 EFS_PATH="${EC2_AVAIL_ZONE}.${EFS_FILE_SYSTEM_ID}.efs.${EC2_REGION}.amazonaws.com"
 
 # Create and Mount volume
-mkdir ${EFS_OS_MOUNT_PATH}
+mkdir -p ${EFS_OS_MOUNT_PATH}
 echo -e "${EFS_PATH}:${EFS_MOUNT_PATH} ${EFS_OS_MOUNT_PATH} nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
 mount -a
 
