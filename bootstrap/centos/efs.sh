@@ -6,8 +6,8 @@
 
 # Mount EFS to a temp directory and create the EFS path if it doesn't exist  
 # Thie ensures the permanent mount works as expected
-temp_dir="$(mktemp -u -t efs.XXXXXXXXXX)"
-mount -t efs -o tls "${EFS_FILE_SYSTEM_ID}:/" ${temp_dir}
+temp_dir="$(mktemp -d -t efs.XXXXXXXX)"
+mount -t efs -o tls "${EFS_FILE_SYSTEM_ID}:/" ${temp_dir} || return $?
 if [[ ! -d "${temp_dir}/${EFS_MOUNT_PATH}" ]]; then 
     mkdir -p "${temp_dir}/${EFS_MOUNT_PATH}"
 fi
@@ -15,7 +15,7 @@ umount ${temp_dir}
 
 # Create and Mount volume
 mkdir -p ${EFS_OS_MOUNT_PATH}
-echo -e "${EFS_FILE_SYSTEM_ID} ${EFS_OS_MOUNT_PATH} defaults,tls,_netdev 0 0" >> /etc/fstab
+echo -e "${EFS_FILE_SYSTEM_ID}:${EFS_MOUNT_PATH} ${EFS_OS_MOUNT_PATH} efs defaults,tls,_netdev 0 0" >> /etc/fstab
 mount -a
 
 # Allow Full Access to volume (Allows for unkown container access )
