@@ -42,6 +42,16 @@ if [[ (-n "${ECS_LOG_DRIVER}") && ("${ECS_LOG_DRIVER}" != "awslogs") ]]; then
 	fi
 fi
 
+# Add additonal users to docker group
+if [[ -n "${DOCKER_USERS}" ]]; then 
+    IFS=',' read -ra DOCKER_USERS_LIST <<< "${DOCKER_USERS}"
+    for DOCKER_USER in "${DOCKER_USERS_LIST[@]}" ; do
+        IFS=":" read -ra DOCKER_USER_DETAIL <<< "${DOCKER_USER}"
+        useradd -u "${DOCKER_USER_DETAIL[1]}" -M -s /sbin/nologin "${DOCKER_USER_DETAIL[0]}"
+        usermod -a -G docker "${DOCKER_USER_DETAIL[0]}"
+    done
+fi 
+
 # Restart docker to ensure it picks up any EBS volume mounts and updated configuration settings
 # - see https://github.com/aws/amazon-ecs-agent/issues/62
 /sbin/service docker restart 
