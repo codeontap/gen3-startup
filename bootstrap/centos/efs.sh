@@ -3,6 +3,7 @@
 # Assumes EFS_MOUNT_PATH - Environment Variable - The Path on the EFS File System
 # Assumes EFS_OS_MOUNT_PATH - Environment Variable - Location on the OS where the share should mount 
 # Assumes amazon-efs-utils has been installed already 
+exec > >(tee /var/log/codeontap/efs.log|logger -t codeontap-efs -s 2>/dev/console) 2>&1
 
 # Mount EFS to a temp directory and create the EFS path if it doesn't exist  
 # Thie ensures the permanent mount works as expected

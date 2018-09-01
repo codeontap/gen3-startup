@@ -1,4 +1,5 @@
 #!/bin/bash
+exec > >(tee /var/log/codeontap/awslogs.log|logger -t codeontap-awslogs -s 2>/dev/console) 2>&1
 
 ######### Configure awslogs
 # Template awslogs.conf needs to be in place
