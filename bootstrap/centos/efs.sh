@@ -10,14 +10,15 @@ temp_dir="$(mktemp -d -t efs.XXXXXXXX)"
 mount -t efs "${EFS_FILE_SYSTEM_ID}:/" ${temp_dir} || exit $?
 if [[ ! -d "${temp_dir}/${EFS_MOUNT_PATH}" ]]; then 
     mkdir -p "${temp_dir}/${EFS_MOUNT_PATH}"
+
+    # Allow Full Access to volume (Allows for unkown container access )
+    chown -R ugo+rwx "${temp_dir}/${EFS_MOUNT_PATH}"
 fi
 umount ${temp_dir}
 
 # Create and Mount volume
 mkdir -p ${EFS_OS_MOUNT_PATH}
-echo -e "${EFS_FILE_SYSTEM_ID}:${EFS_MOUNT_PATH} ${EFS_OS_MOUNT_PATH} efs defaults,_netdev 0 0" >> /etc/fstab
-mount -a
+mount -t efs "${EFS_FILE_SYSTEM_ID}:${EFS_MOUNT_PATH}" "${EFS_OS_MOUNT_PATH}" || exit $?
 
-# Allow Full Access to volume (Allows for unkown container access )
-#TODO(roleyfoley): Look at System Manager as potential fix for this
-chmod -R ugo+rwx ${EFS_OS_MOUNT_PATH}
+# Add to permanent mount in case of reboots
+echo -e "${EFS_FILE_SYSTEM_ID}:${EFS_MOUNT_PATH} ${EFS_OS_MOUNT_PATH} efs defaults,_netdev 0 0" >> /etc/fstab
