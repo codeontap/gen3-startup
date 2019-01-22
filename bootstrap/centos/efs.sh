@@ -7,7 +7,7 @@
 # Mount EFS to a temp directory and create the EFS path if it doesn't exist  
 # Thie ensures the permanent mount works as expected
 temp_dir="$(mktemp -d -t efs.XXXXXXXX)"
-mount -t efs -o tls "${EFS_FILE_SYSTEM_ID}:/" ${temp_dir} || exit $?
+mount -t efs "${EFS_FILE_SYSTEM_ID}:/" ${temp_dir} || exit $?
 if [[ ! -d "${temp_dir}/${EFS_MOUNT_PATH}" ]]; then 
     mkdir -p "${temp_dir}/${EFS_MOUNT_PATH}"
 fi
