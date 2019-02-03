@@ -12,7 +12,7 @@ if [[ ! -d "${temp_dir}/${EFS_MOUNT_PATH}" ]]; then
     mkdir -p "${temp_dir}/${EFS_MOUNT_PATH}"
 
     # Allow Full Access to volume (Allows for unkown container access )
-    chown -R ugo+rwx "${temp_dir}/${EFS_MOUNT_PATH}"
+    chmod -R ugo+rwx "${temp_dir}/${EFS_MOUNT_PATH}"
 fi
 umount ${temp_dir}
 
