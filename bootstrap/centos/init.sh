@@ -191,7 +191,4 @@ mountDevice /dev/xvdp /codeontap ext4
 ln -s /codeontap /product
 mountDevice /dev/xvdc /cache
 mountDevice /dev/xvdt /temp
-
-
-
-
+mountDevice /dev/xvdv /var/lib/docker/volumes
