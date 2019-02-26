@@ -31,7 +31,7 @@ function mountDevice()
     file_system=$3
     
     if [[ ! -d $mount_point ]]; then
-            mkdir $mount_point
+            mkdir -p $mount_point
     fi
 
     echo "------${device_name}---$(date)------"
