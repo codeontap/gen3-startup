@@ -31,7 +31,7 @@ function mountDevice()
     file_system=$3
     
     if [[ ! -d $mount_point ]]; then
-            mkdir $mount_point
+            mkdir -p $mount_point
     fi
 
     echo "------${device_name}---$(date)------"
@@ -191,7 +191,4 @@ mountDevice /dev/xvdp /codeontap ext4
 ln -s /codeontap /product
 mountDevice /dev/xvdc /cache
 mountDevice /dev/xvdt /temp
-
-
-
-
+mountDevice /dev/xvdv /var/lib/docker/volumes
