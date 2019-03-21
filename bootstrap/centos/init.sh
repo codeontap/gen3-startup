@@ -1,4 +1,8 @@
 #!/bin/bash -x
+# This script can be used in two diferent mode 
+# - Init Mode - this is used for the intial setup of an instance and the standard disk mounts we use
+# - Data Volume Mounting - this is used to mount extra data volumes at boot time - Each volume is a seperate instance of the script
+
 exec > >(tee /var/log/codeontap/init.log|logger -t codeontap-init -s 2>/dev/console) 2>&1
 
 default_file_system="ext4"                                                    # the default filesystem used if not specified by user
@@ -9,8 +13,9 @@ instance_id=`curl http://169.254.169.254/latest/meta-data/instance-id`
 local_ip=`/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}' |tr "." "-"`
 fstab_file="/etc/fstab"
 
-function set_hostname()
-{
+REGION=$(/etc/codeontap/facts.sh | grep cot:accountRegion= | cut -d '=' -f 2)
+
+function set_hostname() {
 	grep -q $host_string $file 
 	if [[ $? == 0 ]]; then
         host_value=`source $file | grep $host_string | awk -F= '{print $2}'`
@@ -24,8 +29,7 @@ function set_hostname()
     echo $(hostname)
 }
 
-function mountDevice()
-{
+function mountDevice() {
 	device_name=$1
 	mount_point=$2
     file_system=$3
@@ -54,8 +58,7 @@ function mountDevice()
     fi
 }
 
-function format_device()
-{
+function format_device() {
     device_name=$1
     mount_point=$2
     file_system=$3
@@ -67,8 +70,7 @@ function format_device()
     fi
 }
 
-function check_file_system()
-{
+function check_file_system() {
     device_name=$1
     mount_point=$2
     file_system=$3
@@ -101,8 +103,7 @@ function check_file_system()
     fi
 }
 
-function assign_file_system()
-{   
+function assign_file_system() {   
     device_name=$1
     file_system=$2
     mkfs.$file_system $device_name
@@ -115,8 +116,7 @@ function assign_file_system()
     fi
 }
 
-function mount_device()
-{
+function mount_device() {
     device_name=$1
     mount_point=$2
     check_mount_point $device_name $mount_point
@@ -141,8 +141,7 @@ function mount_device()
     fi
 }
 
-function check_mount_point()
-{
+function check_mount_point() {
     device_name=$1
     mount_point=$2
     mount_status=0
@@ -161,8 +160,7 @@ function check_mount_point()
     fi
 }
 
-function fstab_mount_entry()
-{
+function fstab_mount_entry() {
     device_name=$1
     mount_point=$2
     file_system=$3
@@ -185,10 +183,20 @@ function fstab_mount_entry()
     fi
 }
 
-set_hostname
-mountDevice /dev/xvdp /codeontap ext4
-# For backwards compatability with previous name
-ln -s /codeontap /product
-mountDevice /dev/xvdc /cache
-mountDevice /dev/xvdt /temp
-mountDevice /dev/xvdv /var/lib/docker/volumes
+# Instance setup and device mounting
+if [[ -z "${DATA_VOLUME_MOUNT_DEVICE}" && -z "${DATA_VOLUME_MOUNT_DIR}" ]]; then 
+    set_hostname
+    mountDevice /dev/xvdp /codeontap ext4
+    # For backwards compatability with previous name
+    ln -s /codeontap /product
+    mountDevice /dev/xvdc /cache
+    mountDevice /dev/xvdt /temp
+    mountDevice /dev/xvdv /var/lib/docker/volumes
+fi
+
+# Add extra mounts for data volumes
+if [[ -n "${DATA_VOLUME_MOUNT_DEVICE}" && -n "${DATA_VOLUME_MOUNT_DIR}" ]]; then 
+    aws --region "${REGION}" ec2 wait volume-in-use --filters Name=attachment.instance-id,Values=${instance_id} Name=attachment.device,Values=${DATA_VOLUME_MOUNT_DEVICE} Name=attachment.status,Values=attached
+    mountDevice "${DATA_VOLUME_MOUNT_DEVICE}" "${DATA_VOLUME_MOUNT_DIR}" || exit $?
+fi 
+
