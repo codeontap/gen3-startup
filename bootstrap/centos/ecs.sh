@@ -51,6 +51,11 @@ if [[ -n "${DOCKER_USERS}" ]]; then
     done
 fi 
 
+# Install the rexray/ebs volume plugin/driver
+if [[ -n "${DOCKER_VOLUME_DRIVER_EBS}" ]]; then
+    docker plugin install rexray/ebs REXRAY_PREEMPT=true EBS_REGION="${REGION}" --grant-all-permissions
+fi
+
 # Restart docker to ensure it picks up any EBS volume mounts and updated configuration settings
 # - see https://github.com/aws/amazon-ecs-agent/issues/62
 /sbin/service docker restart 
