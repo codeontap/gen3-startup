@@ -87,7 +87,7 @@ function check_file_system() {
 
     fi
 
-    local_file_system=`blkid $device_name | grep -oi " type.* " |  awk -F= '{print $2}' | tr -d '"' | tr -d ' '`
+    local_file_system=`/sbin/blkid $device_name | grep -oi " type.* " |  awk -F= '{print $2}' | tr -d '"' | tr -d ' '`
     if [[ "$file_system" == "$local_file_system" ]]; then                                                            #compare the filesystem passed by user with the filesystem allocated to the device (if device already has a filesystem). If the values are different then allocate filesystem to device passed by the user. 
         return 0
     else
@@ -106,7 +106,7 @@ function check_file_system() {
 function assign_file_system() {   
     device_name=$1
     file_system=$2
-    mkfs.$file_system $device_name
+    /sbin/mkfs.$file_system $device_name
     exit_status=$?
     if [[ "$exit_status" != 0 ]]; then
         echo "file system not applied"
