@@ -58,5 +58,7 @@ fi
 
 # Restart docker to ensure it picks up any EBS volume mounts and updated configuration settings
 # - see https://github.com/aws/amazon-ecs-agent/issues/62
-/sbin/service docker restart 
+/sbin/service docker stop
+mount -a
+/sbin/service docker start
 /sbin/start ecs
