@@ -1,4 +1,9 @@
-## Hamlet Engine - Startup
+**Deprecated**
+
+This repository is no longer used and has been archived
+Bootstrap scripts should be included as part of the engine using either prologue/epilogue scripts or generated as part of init scripts
+
+# Hamlet Engine - Startup
 
 This is the repository for Startup, a part of the Hamlet Deploy application. It provides a number of server bootstrap capabilities to Hamlet Deploy.
 
@@ -18,7 +23,7 @@ Startup requires the following Environment Variable(s) in order to function.
 |---------------------|------------------------------------------------------------------------------------------|
 | GENERATION_STARTUP_DIR | A fully qualified filepath to the cloned `./startup` directory |
 
-### Update 
+### Update
 
 To manually perform an update of Startup, simply pull down the latest changes using git.
 
